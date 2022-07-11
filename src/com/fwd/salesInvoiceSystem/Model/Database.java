@@ -16,6 +16,7 @@ public class Database {
         int i = 0;
         while(i < objects.length) {
             Invoice invoice =  new Invoice(objects[i].toString().split(","));
+            System.out.println(invoice.toString());
             if (invoicesArrayList.stream().allMatch(x-> x.getNo()!=invoice.getNo() )){
                 invoice.setInvoiceItems((ArrayList<InvoiceItem>) (invoiceItemsArrayList.stream().filter(e -> e.getInvoiceNo() == invoice.getNo()).collect(Collectors.toList())));
                 invoice.setTotal();
@@ -79,6 +80,7 @@ public class Database {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
             // each lines to array
             objects = bufferedReader.lines().toArray();
+
             bufferedReader.close();
             return objects;
 
