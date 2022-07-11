@@ -126,13 +126,21 @@ public class MainController {
                     , JOptionPane.OK_CANCEL_OPTION
                     , JOptionPane.PLAIN_MESSAGE);
             if (x == 0) {
-                Invoice invoice = new Invoice(Integer.parseInt(newInvoicePanel.getInvoiceNoValue())
-                        , LocalDate.parse(newInvoicePanel.getInvoiceDateValue()
-                        , DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                        , newInvoicePanel.getCustNameValue());
-                database.addInvoice(invoice);
-                DefaultTableModel defaultTableModel = (DefaultTableModel) (this.mainFrame.getInvoicesTable().getModel());
-                defaultTableModel.addRow(invoice.toArray());
+                try {
+                    Invoice invoice = new Invoice(Integer.parseInt(newInvoicePanel.getInvoiceNoValue())
+                            , LocalDate.parse(newInvoicePanel.getInvoiceDateValue()
+                            , DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                            , newInvoicePanel.getCustNameValue());
+                    database.addInvoice(invoice);
+                    DefaultTableModel defaultTableModel = (DefaultTableModel) (this.mainFrame.getInvoicesTable().getModel());
+                    defaultTableModel.addRow(invoice.toArray());
+                } catch (Exception exception) {
+                    JOptionPane.showMessageDialog(this.mainFrame
+                            , "You have to fill all input fields"
+                            , "Insertion Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    exception.printStackTrace();
+                }
             }
         });
         this.mainFrame.addInvoiceItem(e -> {
@@ -147,103 +155,118 @@ public class MainController {
                         , JOptionPane.OK_CANCEL_OPTION
                         , JOptionPane.PLAIN_MESSAGE);
                 if (x == 0) {
+                    try {
+                        InvoiceItem invoiceItem = new InvoiceItem(Integer.parseInt(invoiceItemPanel.getInvoiceItemNoValue()), invoiceNo
+                                , invoiceItemPanel.getItemNameValue()
+                                , Float.parseFloat(invoiceItemPanel.getItemPriceValue())
+                                , Integer.parseInt(invoiceItemPanel.getItemCountValue()));
+                        invoiceItem.setItemTotal();
+                        List<Invoice> invoices = this.database.getInvoicesArrayList().stream()
+                                .filter(xx -> xx.getNo() == invoiceNo).collect(Collectors.toList());
+                        if (invoices.size() != 0) {
+                            Invoice invoice = invoices.get(0);
+                            invoice.addInvoiceItem(invoiceItem);
 
-                    InvoiceItem invoiceItem = new InvoiceItem(Integer.parseInt(invoiceItemPanel.getInvoiceItemNoValue()),invoiceNo
-                            , invoiceItemPanel.getItemNameValue()
-                            , Float.parseFloat(invoiceItemPanel.getItemPriceValue())
-                            , Integer.parseInt(invoiceItemPanel.getItemCountValue()));
-                    invoiceItem.setItemTotal();
-                    List<Invoice> invoices = this.database.getInvoicesArrayList().stream()
-                            .filter(xx -> xx.getNo() == invoiceNo).collect(Collectors.toList());
-                    if (invoices.size() != 0) {
-                        Invoice invoice = invoices.get(0);
-                        invoice.addInvoiceItem(invoiceItem);
-
-                        database.addInvoiceItem(invoiceItem);
-                        mainFrame.InvoiceInfo(invoice);
-                        mainFrame.setInvoicesTableInfo(database.getInvoicesArrayList());
-                    } else {
+                            database.addInvoiceItem(invoiceItem);
+                            mainFrame.InvoiceInfo(invoice);
+                            mainFrame.setInvoicesTableInfo(database.getInvoicesArrayList());
+                        }
+                    } catch (Exception exception) {
                         JOptionPane.showMessageDialog(this.mainFrame
-                                , "Associated Invoice does not exist "
-                                , "Associated Invoice is does not  exist",
+                                , "You have to fill all input fields"
+                                , "Insertion Error",
                                 JOptionPane.ERROR_MESSAGE);
-
+                        exception.printStackTrace();
                     }
-
+                } else {
+                    JOptionPane.showMessageDialog(this.mainFrame
+                            , "Associated Invoice does not exist "
+                            , "Associated Invoice is does not  exist",
+                            JOptionPane.ERROR_MESSAGE);
 
                 }
-            }
 
-        });
-        this.mainFrame.deleteInvoice(e -> {
-            int selectedRow = this.mainFrame.getInvoicesTable().getSelectedRow();
-            if (selectedRow != -1) {
-                int invoiceNo = (Integer) (this.mainFrame.getInvoicesTable().getValueAt(selectedRow, 0));
-                database.deleteInvoice(invoiceNo);
-                mainFrame.setInvoicesTableInfo(database.getInvoicesArrayList());
-                mainFrame.resetInvoiceInfo();
-            }
-        });
-        this.mainFrame.deleteInvoiceItem(e -> {
-            int selectedRow = this.mainFrame.getInvoiceItemsTable().getSelectedRow();
-            if (selectedRow != -1) {
-                JTable invoiceItemsTable = this.mainFrame.getInvoiceItemsTable();
-                int invoiceItemNo = (Integer) (invoiceItemsTable.getValueAt(selectedRow, 0));
-                mainFrame.InvoiceInfo(database.deleteInvoiceItem(invoiceItemNo));
-                mainFrame.setInvoicesTableInfo(database.getInvoicesArrayList());
 
             }
-        });
-        this.mainFrame.saveChanges(e -> {
-            this.saveChanges();
-        });
-        this.mainFrame.saveMenuItem(e -> {
-            this.saveChanges();
-        });
-        this.mainFrame.cancelChanges(e -> {
-            if (invoiceItemsFile !=null){
-                try {
-                    this.database.setInvoiceItemsArrayList(this.database.loadFile(invoiceItemsFile));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+        
 
-            }
-            else{
-                try {
-                    this.database.setInvoiceItemsArrayList(new Object[0]);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-            this.mainFrame.resetInvoiceInfo();
-            if (invoicesFile != null){
-                try {
-                    this.database.setInvoicesArrayList(this.database.loadFile(invoicesFile));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-            else{
-                try {
-                    this.database.setInvoicesArrayList(new Object[0]);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-            this.mainFrame.setInvoicesTableInfo(this.database.getInvoicesArrayList());
-        });
-    }
+    });
+        this.mainFrame.deleteInvoice(e ->
 
-    public void saveChanges(){
+    {
+        int selectedRow = this.mainFrame.getInvoicesTable().getSelectedRow();
+        if (selectedRow != -1) {
+            int invoiceNo = (Integer) (this.mainFrame.getInvoicesTable().getValueAt(selectedRow, 0));
+            database.deleteInvoice(invoiceNo);
+            mainFrame.setInvoicesTableInfo(database.getInvoicesArrayList());
+            mainFrame.resetInvoiceInfo();
+        }
+    });
+        this.mainFrame.deleteInvoiceItem(e ->
+
+    {
+        int selectedRow = this.mainFrame.getInvoiceItemsTable().getSelectedRow();
+        if (selectedRow != -1) {
+            JTable invoiceItemsTable = this.mainFrame.getInvoiceItemsTable();
+            int invoiceItemNo = (Integer) (invoiceItemsTable.getValueAt(selectedRow, 0));
+            mainFrame.InvoiceInfo(database.deleteInvoiceItem(invoiceItemNo));
+            mainFrame.setInvoicesTableInfo(database.getInvoicesArrayList());
+
+        }
+    });
+        this.mainFrame.saveChanges(e ->
+
+    {
+        this.saveChanges();
+    });
+        this.mainFrame.saveMenuItem(e ->
+
+    {
+        this.saveChanges();
+    });
+        this.mainFrame.cancelChanges(e ->
+
+    {
+        if (invoiceItemsFile != null) {
+            try {
+                this.database.setInvoiceItemsArrayList(this.database.loadFile(invoiceItemsFile));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        } else {
+            try {
+                this.database.setInvoiceItemsArrayList(new Object[0]);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        this.mainFrame.resetInvoiceInfo();
+        if (invoicesFile != null) {
+            try {
+                this.database.setInvoicesArrayList(this.database.loadFile(invoicesFile));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            try {
+                this.database.setInvoicesArrayList(new Object[0]);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        this.mainFrame.setInvoicesTableInfo(this.database.getInvoicesArrayList());
+    });
+}
+
+    public void saveChanges() {
         try {
             if (invoicesFile != null) {
 
                 this.database.saveFile(invoicesFile.getPath(), this.database.getInvoicesArrayList());
-            }
-            else{
+            } else {
                 File file = fileSaveDialog("Specify File To Save Invoices");
-                if (file !=null){
+                if (file != null) {
                     this.database.saveFile(file.getPath(), this.database.getInvoicesArrayList());
                 }
             }
@@ -255,10 +278,9 @@ public class MainController {
             if (invoiceItemsFile != null) {
 
                 this.database.saveFile(invoiceItemsFile.getPath(), this.database.getInvoiceItemsArrayList());
-            }
-            else{
+            } else {
                 File file = fileSaveDialog("Specify File To Save InvoiceItems");
-                if (file !=null){
+                if (file != null) {
                     this.database.saveFile(file.getPath(), this.database.getInvoiceItemsArrayList());
                 }
             }
@@ -266,7 +288,8 @@ public class MainController {
             ex.printStackTrace();
         }
     }
-    public File fileSaveDialog(String title){
+
+    public File fileSaveDialog(String title) {
         JFileChooser filesChooser = new JFileChooser();
         filesChooser.setDialogTitle(title);
         filesChooser.setFileFilter(new FileFilter() {
@@ -287,12 +310,13 @@ public class MainController {
                 "src\\com\\fwd\\salesInvoiceSystem\\data"));
         filesChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-        if (filesChooser.showSaveDialog(this.mainFrame) == JFileChooser.APPROVE_OPTION ){
+        if (filesChooser.showSaveDialog(this.mainFrame) == JFileChooser.APPROVE_OPTION) {
             File fileToSave = filesChooser.getSelectedFile();
-            return  fileToSave;
+            return fileToSave;
         }
         return null;
     }
+
     public File fileChooser(String title) throws Exception {
         File file = null;
         JFileChooser filesChooser = new JFileChooser();
