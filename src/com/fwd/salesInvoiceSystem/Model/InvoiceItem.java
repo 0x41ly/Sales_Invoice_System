@@ -1,6 +1,5 @@
 package com.fwd.salesInvoiceSystem.Model;
 
-import java.lang.reflect.Array;
 
 public class InvoiceItem {
     private int no;
@@ -33,43 +32,9 @@ public class InvoiceItem {
     public int getInvoiceNo() {
         return invoiceNo;
     }
-
-    public void setInvoiceNo(int invoiceNo) {
-        this.invoiceNo = invoiceNo;
-    }
-
     public int getNo() {
         return no;
     }
-
-    public void setNo(int no) {
-        this.no = no;
-    }
-
-    public String getItemName() {
-        return itemName;
-    }
-
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public float getItemPrice() {
-        return itemPrice;
-    }
-
-    public void setItemPrice(float itemPrice) {
-        this.itemPrice = itemPrice;
-    }
-
-    public int getItemCount() {
-        return itemCount;
-    }
-
-    public void setItemCount(int itemCount) {
-        this.itemCount = itemCount;
-    }
-
     public void setItemTotal() {
         itemTotal = itemCount * itemPrice;
     }
@@ -77,5 +42,17 @@ public class InvoiceItem {
         return itemTotal;
     }
 
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
 
+    public void setItemPrice(float itemPrice) {
+        this.itemPrice = itemPrice;
+        this.setItemTotal();
+    }
+
+    public void setItemCount(int itemCount) {
+        this.itemCount = itemCount;
+        this.setItemTotal();
+    }
 }

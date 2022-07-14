@@ -39,7 +39,7 @@ public class NewInvoiceItemPanel extends javax.swing.JPanel {
 
         invoiceNoValue.setEditable(false);
         invoiceNoValue.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-        invoiceNoValue.setEnabled(false);
+
 
 
         itemCountValue.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
@@ -48,7 +48,7 @@ public class NewInvoiceItemPanel extends javax.swing.JPanel {
         itemPriceValue.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
 
         invoiceItemNoLabel.setText("No :");
-
+        invoiceItemNoValue.setEditable(false);
         invoiceItemNoValue.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
 
 
@@ -105,14 +105,7 @@ public class NewInvoiceItemPanel extends javax.swing.JPanel {
     public void setInvoiceNoValue(String invoiceNoValue) {
         this.invoiceNoValue.setText(invoiceNoValue);
     }
-
-    public String getInvoiceNoValue() {
-        return invoiceNoValue.getText();
-    }
-
-    public String getInvoiceItemNoValue() {
-        return invoiceItemNoValue.getText();
-    }
+    public void setInvoiceItemNoValue(String invoiceItemNoValue){this.invoiceItemNoValue.setText(invoiceItemNoValue);}
 
 
     public String getItemCountValue() {

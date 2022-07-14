@@ -1,13 +1,8 @@
 package com.fwd.salesInvoiceSystem.Model;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 public class Invoice {
     private int no;
@@ -67,10 +62,6 @@ public class Invoice {
 
     }
 
-    public void setNo(int no) {
-        this.no = no;
-    }
-
     public void setDate(LocalDate date) {
         this.date = date;
     }
@@ -78,7 +69,6 @@ public class Invoice {
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
     }
-
 
     public ArrayList<InvoiceItem> getInvoiceItems() {
         return invoiceItems;

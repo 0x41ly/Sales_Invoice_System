@@ -2,12 +2,12 @@ package com.fwd.salesInvoiceSystem.View;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-
-import java.awt.*;
+import javax.swing.table.TableModel;
 import java.awt.event.ActionListener;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
 import com.fwd.salesInvoiceSystem.Controller.*;
 import com.fwd.salesInvoiceSystem.Model.Invoice;
 import com.fwd.salesInvoiceSystem.Model.InvoiceItem;
@@ -219,7 +219,15 @@ public class MainFrame extends JFrame {
                 new String[]{
                         "No.", "Item Name", "Item Price", "Count", "Item Total"
                 }
-        ));
+        ){
+            boolean[] canEdit = new boolean[]{
+                    false, true, true, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        });
         invoiceItemsScroll.setViewportView(invoiceItemsTable);
 
         addInvoiceItem.setText("Add item");
@@ -376,6 +384,9 @@ public class MainFrame extends JFrame {
         cancelChanges.addActionListener(actionListener);
     }
 
+    public void editInvoicesTableCell(TableModelListener tableModelListener){ invoicesTable.getModel().addTableModelListener(tableModelListener);}
+    public void editInvoiceItemsTableCell(TableModelListener tableModelListener){ invoiceItemsTable.getModel().addTableModelListener(tableModelListener);}
+
     public void selectRowFromInvoicesTable(ListSelectionListener actionListener) {
         invoicesTable.getSelectionModel().addListSelectionListener(actionListener);
     }
@@ -417,7 +428,7 @@ public class MainFrame extends JFrame {
     public void InvoiceInfo(Invoice invoice) {
         invoiceNoValue.setText(String.valueOf(invoice.getNo()));
         custNameValue.setText(invoice.getCustomerName());
-        invoiceDateValue.setText(invoice.getDate().toString());
+        invoiceDateValue.setText(invoice.getDate().format( DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         invoiceTotalValue.setText(String.valueOf(invoice.getTotal()));
         this.setInvoiceItemsTableInfo(invoice.getInvoiceItems());
     }

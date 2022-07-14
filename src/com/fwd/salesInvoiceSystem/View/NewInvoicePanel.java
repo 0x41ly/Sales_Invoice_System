@@ -1,7 +1,6 @@
 package com.fwd.salesInvoiceSystem.View;
 
 
-import javax.swing.*;
 
 public class NewInvoicePanel extends javax.swing.JPanel {
 
@@ -33,9 +32,8 @@ public class NewInvoicePanel extends javax.swing.JPanel {
         invoiceDateLabel.setText("Date :");
 
         custNameLabel.setText("Customer Name :");
-
+        invoiceNoValue.setEditable(false);
         invoiceNoValue.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-
         invoiceDateValue.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -84,6 +82,10 @@ public class NewInvoicePanel extends javax.swing.JPanel {
 
     public String getInvoiceNoValue() {
         return invoiceNoValue.getText();
+    }
+
+    public void setInvoiceNoValue(String invoiceNoValue) {
+        this.invoiceNoValue.setText(invoiceNoValue);
     }
 
     // Variables declaration - do not modify
