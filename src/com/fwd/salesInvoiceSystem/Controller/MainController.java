@@ -336,6 +336,7 @@ public class MainController {
                     invoice.setTotal();
                     invoiceItemsTable.clearSelection();
                     mainFrame.InvoiceInfo(invoice);
+                    mainFrame.setInvoicesTableInfo(database.getInvoicesArrayList());
 
                 }
 
